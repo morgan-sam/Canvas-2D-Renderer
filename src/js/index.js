@@ -41,46 +41,51 @@ function arrayToRGBA(rgbaArrayInput) {
     return rgbaColor;
 }
 
-const testFunction = async () => {
-    const imgToMatrixObject = async imgURL => {
-        let img = new Image();
-        let cvs = document.createElement('canvas');
-        let ctx = cvs.getContext('2d');
-        img.onload = function() {
-            ctx.drawImage(img, 0, 0);
-            cvs.width = img.width;
-            cvs.height = img.height;
-            ctx.drawImage(img, 0, 0, img.width, img.height);
-            let pixelData = [];
-            let xRow = [];
-            let pixel;
-            for (let y = 0; y < img.height; y++) {
-                for (let x = 0; x < img.width; x++) {
-                    pixel = Array.from(ctx.getImageData(x, y, 1, 1).data);
-                    //if white pixel make transparent
-                    if (
-                        pixel[0] === 255 &&
-                        pixel[1] === 255 &&
-                        pixel[2] == 255
-                    ) {
-                        pixel = [255, 255, 255, 0];
-                    }
-                    xRow.push(pixel);
-                }
-                pixelData.push(Array.from(xRow));
-                xRow = [];
+const imgToMatrixObject = async imgURL => {
+    let img = await loadImage(imgURL);
+    let cvs = document.createElement('canvas');
+    cvs.width = img.width;
+    cvs.height = img.height;
+    let ctx = cvs.getContext('2d');
+    ctx.drawImage(img, 0, 0);
+    let pixelData = [];
+    let xRow = [];
+    let pixel;
+    for (let y = 0; y < cvs.height; y++) {
+        for (let x = 0; x < cvs.width; x++) {
+            pixel = Array.from(ctx.getImageData(x, y, 1, 1).data);
+            //if white pixel make transparent
+            if (pixel[0] === 255 && pixel[1] === 255 && pixel[2] == 255) {
+                pixel = [255, 255, 255, 0];
             }
-            console.log(pixelData);
-            drawObject(pixelData, 0, 0);
-            drawObject(pixelData, 5, 3);
-            drawObject(pixelData, 8, 10);
-            drawObject(pixelData, 2, 6);
-            return pixelData;
-        };
-        img.src = imgURL;
-    };
-
-    let testKnight = await imgToMatrixObject(knight);
-    console.log(testKnight);
+            xRow.push(pixel);
+        }
+        pixelData.push(Array.from(xRow));
+        xRow = [];
+    }
+    return pixelData;
 };
-testFunction();
+
+const loadImage = async imgURL => {
+    return new Promise((resolve, reject) => {
+        let img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+        img.src = imgURL;
+    });
+};
+
+const drawKnights = async () => {
+    let testKnight = await imgToMatrixObject(knight);
+
+    for (let i = 0; i < 10; i++) {
+        let randx = randomIntFromInterval(0, 100);
+        let randy = randomIntFromInterval(0, 100);
+        drawObject(testKnight, randx, randy);
+    }
+};
+drawKnights();
+
+function randomIntFromInterval(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) + min);
+}
