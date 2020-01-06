@@ -53,15 +53,28 @@ const testFunction = async () => {
             ctx.drawImage(img, 0, 0, img.width, img.height);
             let pixelData = [];
             let xRow = [];
+            let pixel;
             for (let y = 0; y < img.height; y++) {
                 for (let x = 0; x < img.width; x++) {
-                    xRow.push(Array.from(ctx.getImageData(x, y, 1, 1).data));
+                    pixel = Array.from(ctx.getImageData(x, y, 1, 1).data);
+                    //if white pixel make transparent
+                    if (
+                        pixel[0] === 255 &&
+                        pixel[1] === 255 &&
+                        pixel[2] == 255
+                    ) {
+                        pixel = [255, 255, 255, 0];
+                    }
+                    xRow.push(pixel);
                 }
                 pixelData.push(Array.from(xRow));
                 xRow = [];
             }
             console.log(pixelData);
             drawObject(pixelData, 0, 0);
+            drawObject(pixelData, 5, 3);
+            drawObject(pixelData, 8, 10);
+            drawObject(pixelData, 2, 6);
             return pixelData;
         };
         img.src = imgURL;
