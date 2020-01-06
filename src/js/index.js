@@ -5,29 +5,55 @@ canvas.height = 480;
 canvas.width = 640;
 let context = canvas.getContext('2d');
 
-let x = 0;
-let y = 0;
-
 let object = [
+    ['red', 'orange', 'yellow'],
+    ['blue', 'green', 'purple'],
+    ['grey', 'black', 'white'],
+    ['red', 'orange', 'yellow'],
+    ['blue', 'green', 'purple'],
+    ['grey', 'black', 'white'],
     ['red', 'orange', 'yellow'],
     ['blue', 'green', 'purple'],
     ['grey', 'black', 'white'],
 ];
 
-let pixelWidth = canvas.width / object[0].length;
-let pixelHeight = canvas.height / object.length;
+let object2 = [
+    ['red', 'red', 'red'],
+    ['red', 'steelblue', 'red'],
+    ['red', 'red', 'red'],
+    ['green', 'green', 'green'],
+    ['green', 'white', 'green'],
+    ['green', 'green', 'green'],
+    ['red', 'red', 'red'],
+    ['red', 'steelblue', 'red'],
+    ['red', 'red', 'red'],
+];
 
-let xPixels = object[0].length;
-let yPixels = object.length;
+function drawObject(inputObject, objX, objY) {
+    let pixelHeight, pixelWidth;
+    let xPixels = inputObject[0].length;
+    let yPixels = inputObject.length;
 
-for (let y = 0; y < yPixels; y++) {
-    for (let x = 0; x < xPixels; x++) {
-        context.fillStyle = object[y][x];
-        context.fillRect(
-            x * pixelWidth,
-            y * pixelHeight,
-            pixelWidth,
-            pixelHeight,
-        );
+    //stretch pixels
+    pixelWidth = canvas.width / xPixels;
+    pixelHeight = canvas.height / yPixels;
+
+    //fixed size pixels
+    pixelWidth = 5;
+    pixelHeight = 5;
+
+    for (let y = 0; y < yPixels; y++) {
+        for (let x = 0; x < xPixels; x++) {
+            context.fillStyle = inputObject[y][x];
+            context.fillRect(
+                objX + x * pixelWidth,
+                objY + y * pixelHeight,
+                pixelWidth,
+                pixelHeight,
+            );
+        }
     }
 }
+
+drawObject(object, 10, 10);
+drawObject(object2, 40, 10);
