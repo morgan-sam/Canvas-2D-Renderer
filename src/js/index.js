@@ -42,6 +42,9 @@ function drawObject(inputObject, objX, objY) {
     pixelWidth = 5;
     pixelHeight = 5;
 
+    objX = objX * pixelWidth;
+    objY = objY * pixelHeight;
+
     for (let y = 0; y < yPixels; y++) {
         for (let x = 0; x < xPixels; x++) {
             context.fillStyle = inputObject[y][x];
@@ -55,5 +58,5 @@ function drawObject(inputObject, objX, objY) {
     }
 }
 
-drawObject(object, 10, 10);
-drawObject(object2, 40, 10);
+drawObject(object, 0, 0);
+drawObject(object2, 1, 1);
