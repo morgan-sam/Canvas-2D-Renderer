@@ -1,33 +1,10 @@
 import '../css/main.css';
+import knight from '../img/knight.png';
 
 let canvas = document.getElementById('myCanvas');
 canvas.height = 480;
 canvas.width = 640;
 let context = canvas.getContext('2d');
-
-let object = [
-    ['red', 'orange', 'yellow'],
-    ['blue', 'green', 'purple'],
-    ['grey', 'black', 'white'],
-    ['red', 'orange', 'yellow'],
-    ['blue', 'green', 'purple'],
-    ['grey', 'black', 'white'],
-    ['red', 'orange', 'yellow'],
-    ['blue', 'green', 'purple'],
-    ['grey', 'black', 'white'],
-];
-
-let object2 = [
-    ['red', 'red', 'red'],
-    ['red', 'steelblue', 'red'],
-    ['red', 'red', 'red'],
-    ['green', 'green', 'green'],
-    ['green', 'white', 'green'],
-    ['green', 'green', 'green'],
-    ['red', 'red', 'red'],
-    ['red', 'steelblue', 'red'],
-    ['red', 'red', 'red'],
-];
 
 function drawObject(inputObject, objX, objY) {
     let pixelHeight, pixelWidth;
@@ -47,7 +24,7 @@ function drawObject(inputObject, objX, objY) {
 
     for (let y = 0; y < yPixels; y++) {
         for (let x = 0; x < xPixels; x++) {
-            context.fillStyle = inputObject[y][x];
+            context.fillStyle = arrayToRGBA(inputObject[y][x]);
             context.fillRect(
                 objX + x * pixelWidth,
                 objY + y * pixelHeight,
@@ -58,5 +35,39 @@ function drawObject(inputObject, objX, objY) {
     }
 }
 
-drawObject(object, 0, 0);
-drawObject(object2, 1, 1);
+function arrayToRGBA(rgbaArrayInput) {
+    let string = rgbaArrayInput;
+    let rgbaColor = `rgba(${string})`;
+    return rgbaColor;
+}
+
+const testFunction = async () => {
+    const imgToMatrixObject = async imgURL => {
+        let img = new Image();
+        let cvs = document.createElement('canvas');
+        let ctx = cvs.getContext('2d');
+        img.onload = function() {
+            ctx.drawImage(img, 0, 0);
+            cvs.width = img.width;
+            cvs.height = img.height;
+            ctx.drawImage(img, 0, 0, img.width, img.height);
+            let pixelData = [];
+            let xRow = [];
+            for (let y = 0; y < img.height; y++) {
+                for (let x = 0; x < img.width; x++) {
+                    xRow.push(Array.from(ctx.getImageData(x, y, 1, 1).data));
+                }
+                pixelData.push(Array.from(xRow));
+                xRow = [];
+            }
+            console.log(pixelData);
+            drawObject(pixelData, 0, 0);
+            return pixelData;
+        };
+        img.src = imgURL;
+    };
+
+    let testKnight = await imgToMatrixObject(knight);
+    console.log(testKnight);
+};
+testFunction();
