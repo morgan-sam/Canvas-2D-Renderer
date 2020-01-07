@@ -75,16 +75,19 @@ const loadImage = async imgURL => {
     });
 };
 
-const drawKnights = async () => {
+const drawKnightsDemo = async () => {
     let testKnight = await imgToMatrixObject(knight);
-
-    for (let i = 0; i < 10; i++) {
+    let y = 0;
+    let intervalID = setInterval(function() {
         let randx = randomIntFromInterval(0, 100);
-        let randy = randomIntFromInterval(0, 100);
-        drawObject(testKnight, randx, randy);
-    }
+        drawObject(testKnight, randx + 5, y / 4 + 5);
+        if (y++ === 200) {
+            window.clearInterval(intervalID);
+        }
+    }, 10);
 };
-drawKnights();
+
+drawKnightsDemo();
 
 function randomIntFromInterval(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
